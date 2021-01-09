@@ -1,4 +1,4 @@
-**Experience Updates** is a [Stardew Walley](http://stardewvalley.net/) visual mod that shows you when you gain the experience.
+**Experience Updates** is a [Stardew Walley](http://stardewvalley.net/) visual mod that shows you when you gain the experience. Available on [NexusMods](https://www.nexusmods.com/stardewvalley/mods/7581)
 
 This is how it shows without [experience bars mod](https://github.com/spacechase0/ExperienceBars) installed (pay attention to the top left corner) <br>
 ![no_bars_mod](media/preview_no_bars.gif)
