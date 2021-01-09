@@ -1,6 +1,5 @@
 ﻿using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using System;
 
 namespace ExperienceUpdates
 {
@@ -9,19 +8,22 @@ namespace ExperienceUpdates
         private ExperienceCalculator calculator;
         private TextRenderer renderer;
 
-        /*********
-        ** Public methods
-        *********/
-        /// <summary>The mod entry point, called after the mod is first loaded.</summary>
-        /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+            helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
             helper.Events.Display.RenderedHud += this.OnRenderedHud;
+        }
+
+        private void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
+        {
+            Monitor.Log("Went to title, stopping");
+            Calculator().Stop();
         }
 
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
+            Monitor.Log("Save loaded, resetting counters");
             Calculator().Reset();
         }
 

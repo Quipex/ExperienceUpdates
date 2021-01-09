@@ -11,7 +11,7 @@ namespace ExperienceUpdates
             if (skillColors != null)
                 return skillColors[skill];
 
-            // Taken from the icons
+            // https://github.com/spacechase0/ExperienceBars
             skillColors = new Color[]
             {
                 new Color( 115, 255, 56 ),

@@ -12,10 +12,16 @@ namespace ExperienceUpdates
         private readonly int[] lastExp = new int[6];
         private readonly Dictionary<int, SparklingText> textsToSkill = new Dictionary<int, SparklingText>();
         private readonly IMonitor monitor;
+        private bool running = false;
 
         public ExperienceCalculator(IMonitor monitor)
         {
             this.monitor = monitor;
+        }
+
+        internal void Stop()
+        {
+            this.running = false;
         }
 
         internal Dictionary<int, SparklingText> GetUpdatableTexts()
@@ -26,27 +32,20 @@ namespace ExperienceUpdates
 
         internal void Reset()
         {
-            Game1.player.experiencePoints.CopyTo(lastExp, 0);
+            var newExp = Game1.player.experiencePoints;
+            newExp.CopyTo(lastExp, 0);
+            monitor.Log($"Resetted experience {newExp}. Resuming experience update listener.");
+            this.running = true;
         }
 
         private void UpdateState()
         {
             var newExp = Game1.player.experiencePoints;
-            if (InitExp(newExp)) return;
-
             UpdateTexts();
-            CheckForSkillUpdates(newExp);
-
-        }
-
-        private bool InitExp(Netcode.NetArray<int, Netcode.NetInt> newExp)
-        {
-            if (lastExp == null)
+            if (this.running)
             {
-                newExp.CopyTo(lastExp, 0);
-                return true;
+                CheckForSkillUpdates(newExp);
             }
-            return false;
         }
 
         private void UpdateTexts()
@@ -91,7 +90,7 @@ namespace ExperienceUpdates
                 }
             }
             var nextLevelText = leftTillNext > 0 ? $"{leftTillNext} more for next level" : "max level";
-            monitor.Log($"Gained +{gained} for {(ExperienceType)skill} ({nextLevelText})", LogLevel.Info);
+            monitor.Log($"Gained +{gained} for {(ExperienceType)skill} ({nextLevelText})", LogLevel.Debug);
         }
 
         private void AddTextToRender(int skill, int gained)

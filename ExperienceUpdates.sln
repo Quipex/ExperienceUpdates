@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExperienceUpdates", "ExperienceUpdates\ExperienceUpdates.csproj", "{9048FE38-6E90-4303-9EF7-4BBB95AA28C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExperienceUpdates", "src\ExperienceUpdates.csproj", "{9048FE38-6E90-4303-9EF7-4BBB95AA28C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
