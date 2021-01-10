@@ -99,7 +99,7 @@ namespace ExperienceUpdates
 
             textsToSkill.Remove(skill);
             textsToSkill.Add(skill, new SparklingText(Game1.smallFont, "+" + gained,
-                SkillColorHelper.GetSkillColor(skill), SkillColorHelper.GetSkillColor(skill), millisecondsDuration: 4000));
+                SkillColorHelper.GetSkillColor(skill), SkillColorHelper.GetSkillColor(skill), millisecondsDuration: ModEntry.Config.TextDurationMS));
         }
     }
 }
