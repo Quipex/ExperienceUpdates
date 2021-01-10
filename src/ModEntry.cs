@@ -5,11 +5,15 @@ namespace ExperienceUpdates
 {
     public class ModEntry : Mod
     {
+        private const int NUMBER_OF_SKILLS = 6;
         private ExperienceCalculator calculator;
         private TextRenderer renderer;
+        public static Configuration Config;
 
         public override void Entry(IModHelper helper)
         {
+            Config = helper.ReadConfig<Configuration>();
+
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
             helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
             helper.Events.Display.RenderedHud += this.OnRenderedHud;
@@ -30,7 +34,7 @@ namespace ExperienceUpdates
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
             var textsToRender = Calculator().GetUpdatableTexts();
-            Renderer().Render(textsToRender);
+            Renderer().Render(textsToRender, NUMBER_OF_SKILLS);
         }
 
         private ExperienceCalculator Calculator()
