@@ -11,7 +11,7 @@ Mod configuration is file-based. To change configuration simply change the value
 
 Key | Value  | Description
 --- | ---    | ---
-X   | number (positive/negative) (295 default) | The horizontal offset from the left side of the screen if positive (or from the left side of the screen if negative).
+X   | number (positive/negative) (295 default) | The horizontal offset from the left side of the screen if positive (or from the right side of the screen if negative).
 Y   | number (positive/negative) (20 default) | The vertical offset from the top of the screen if positive (or from the bottom of the screen if negative)
 TextDurationMS | number (4000 default) | The time in milliseconds for the numbers animation to perform (4000 = 4 seconds)
 
