@@ -51,6 +51,7 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="ExperienceCalculator.cs" />
     <Compile Include="ExperienceType.cs" />
+    <Compile Include="GenericModConfigMenuAPI.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkillColorHelper.cs" />
