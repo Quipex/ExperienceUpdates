@@ -8,41 +8,41 @@ namespace ExperienceUpdates
 {
     class ExperienceCalculator
     {
-        public static readonly int[] expNeededForLevel = new int[] { 100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000 };
-        private readonly int[] lastExp = new int[6];
-        private readonly Dictionary<int, SparklingText> textsToSkill = new Dictionary<int, SparklingText>();
-        private readonly IMonitor monitor;
-        private bool running = false;
+        private static readonly int[] EXP_NEEDED_FOR_LEVEL = new int[] {100, 380, 770, 1300, 2150, 3300, 4800, 6900, 10000, 15000};
+        private readonly int[] _lastExp = new int[6];
+        private readonly Dictionary<int, SparklingText> _textsToSkill = new Dictionary<int, SparklingText>();
+        private readonly IMonitor _monitor;
+        private bool _running;
 
         public ExperienceCalculator(IMonitor monitor)
         {
-            this.monitor = monitor;
+            _monitor = monitor;
         }
 
         internal void Stop()
         {
-            this.running = false;
+            _running = false;
         }
 
         internal Dictionary<int, SparklingText> GetUpdatableTexts()
         {
             UpdateState();
-            return textsToSkill;
+            return _textsToSkill;
         }
 
         internal void Reset()
         {
             var newExp = Game1.player.experiencePoints;
-            newExp.CopyTo(lastExp, 0);
-            monitor.Log($"Resetted experience {newExp}. Resuming experience update listener.");
-            this.running = true;
+            newExp.CopyTo(_lastExp, 0);
+            _monitor.Log($"Reset experience {newExp}. Resuming experience update listener.");
+            _running = true;
         }
 
         private void UpdateState()
         {
             var newExp = Game1.player.experiencePoints;
             UpdateTexts();
-            if (this.running)
+            if (_running)
             {
                 CheckForSkillUpdates(newExp);
             }
@@ -50,25 +50,23 @@ namespace ExperienceUpdates
 
         private void UpdateTexts()
         {
-            foreach (var textToSkill in textsToSkill.ToList())
+            foreach (var textToSkill in _textsToSkill.ToList())
             {
                 if (textToSkill.Value.update(Game1.currentGameTime))
                 {
-                    textsToSkill.Remove(textToSkill.Key);
+                    _textsToSkill.Remove(textToSkill.Key);
                 }
             }
         }
 
         private void CheckForSkillUpdates(Netcode.NetArray<int, Netcode.NetInt> newExp)
         {
-            for (int skillIndex = 0; skillIndex < newExp.Length; skillIndex++)
+            for (var skillIndex = 0; skillIndex < newExp.Length; skillIndex++)
             {
-                int diff = newExp[skillIndex] - lastExp[skillIndex];
-                if (diff != 0)
-                {
-                    HandleSkillGain(skillIndex, diff, newExp[skillIndex]);
-                    lastExp[skillIndex] = newExp[skillIndex];
-                }
+                var diff = newExp[skillIndex] - _lastExp[skillIndex];
+                if (diff == 0) continue;
+                HandleSkillGain(skillIndex, diff, newExp[skillIndex]);
+                _lastExp[skillIndex] = newExp[skillIndex];
             }
         }
 
@@ -80,25 +78,19 @@ namespace ExperienceUpdates
 
         private void LogGainedExp(int skill, int gained, int total)
         {
-            int leftTillNext = 0;
-            foreach (int neededExp in expNeededForLevel)
-            {
-                if (total < neededExp)
-                {
-                    leftTillNext = neededExp - total;
-                    break;
-                }
-            }
+            var leftTillNext = (from neededExp in EXP_NEEDED_FOR_LEVEL
+                where total < neededExp
+                select neededExp - total).FirstOrDefault();
             var nextLevelText = leftTillNext > 0 ? $"{leftTillNext} more for next level" : "max level";
-            monitor.Log($"Gained +{gained} for {(ExperienceType)skill} ({nextLevelText})", LogLevel.Debug);
+            _monitor.Log($"Gained +{gained} for {(ExperienceType) skill} ({nextLevelText})", LogLevel.Debug);
         }
 
         private void AddTextToRender(int skill, int gained)
         {
             if (Game1.activeClickableMenu != null) return;
 
-            textsToSkill.Remove(skill);
-            textsToSkill.Add(skill, new SparklingText(Game1.smallFont, "+" + gained,
+            _textsToSkill.Remove(skill);
+            _textsToSkill.Add(skill, new SparklingText(Game1.smallFont, "+" + gained,
                 SkillColorHelper.GetSkillColor(skill), SkillColorHelper.GetSkillColor(skill), millisecondsDuration: ModEntry.Config.TextDurationMS));
         }
     }

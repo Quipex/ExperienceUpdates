@@ -7,8 +7,7 @@ namespace ExperienceUpdates
     public class ModEntry : Mod
     {
         private const int NUMBER_OF_SKILLS = 6;
-        private ExperienceCalculator calculator;
-        private TextRenderer renderer;
+        private ExperienceCalculator _calculator;
         public static Configuration Config;
 
         public override void Entry(IModHelper helper)
@@ -23,14 +22,23 @@ namespace ExperienceUpdates
 
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            var capi = Helper.ModRegistry.GetApi<GenericModConfigMenuAPI>("spacechase0.GenericModConfigMenu");
-            if (capi != null)
-            {
-                capi.RegisterModConfig(ModManifest, () => Config = new Configuration(), () => Helper.WriteConfig(Config));
-                capi.RegisterSimpleOption(ModManifest, "X coordinate", "Pixels from the left side of the screen if positive. From the right side if negative", () => Config.X, (int val) => Config.X = val);
-                capi.RegisterSimpleOption(ModManifest, "Y coordinate", "Pixels from the top of the screen if positive. From the bottom of the screen if negative", () => Config.Y, (int val) => Config.Y = val);
-                capi.RegisterSimpleOption(ModManifest, "Animation duration", "Time in milliseconds for the numbers animation to perform. 4000 is 4 seconds", () => Config.TextDurationMS, (int val) => Config.TextDurationMS = val);
-            }
+            var cApi = Helper.ModRegistry.GetApi<GenericModConfigMenuAPI>("spacechase0.GenericModConfigMenu");
+            if (cApi == null) return;
+
+            cApi.RegisterModConfig(ModManifest, () => Config = new Configuration(), () => Helper.WriteConfig(Config));
+            cApi.RegisterSimpleOption(ModManifest,
+                "X coordinate",
+                "Pixels from the left side of the screen if positive. From the right side if negative",
+                () => Config.X,
+                (int val) => Config.X = val);
+            cApi.RegisterSimpleOption(ModManifest, "Y coordinate",
+                "Pixels from the top of the screen if positive. From the bottom of the screen if negative",
+                () => Config.Y,
+                (int val) => Config.Y = val);
+            cApi.RegisterSimpleOption(ModManifest, "Animation duration",
+                "Time in milliseconds for the numbers animation to perform. 4000 is 4 seconds",
+                () => Config.TextDurationMS,
+                (int val) => Config.TextDurationMS = val);
         }
 
         private void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
@@ -48,25 +56,12 @@ namespace ExperienceUpdates
         private void OnRenderedHud(object sender, RenderedHudEventArgs e)
         {
             var textsToRender = Calculator().GetUpdatableTexts();
-            Renderer().Render(textsToRender, NUMBER_OF_SKILLS);
+            TextRenderer.Render(textsToRender, NUMBER_OF_SKILLS);
         }
 
         private ExperienceCalculator Calculator()
         {
-            if (calculator == null)
-            {
-                calculator = new ExperienceCalculator(Monitor);
-            }
-            return calculator;
-        }
-
-        private TextRenderer Renderer()
-        {
-            if (renderer == null)
-            {
-                renderer = new TextRenderer();
-            }
-            return renderer;
+            return _calculator ?? (_calculator = new ExperienceCalculator(Monitor));
         }
     }
 }
