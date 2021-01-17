@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using Microsoft.Xna.Framework.Input;
-using SpaceShared;
 using SpaceShared.APIs;
 
 namespace ExperienceUpdates
